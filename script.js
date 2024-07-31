@@ -4,6 +4,8 @@ let selectedMedication = null;
 window.onload = function() {
     medications = [...MEDICATION_DATA];
     document.getElementById('details').style.display = 'none';
+    document.getElementById('searchBox').value = '';
+    document.getElementById('unitBox').value = '';
 };
 
 function suggestMedication() {
