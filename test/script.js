@@ -70,18 +70,25 @@ function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Use QuaggaJS to read the barcode from the image
+    console.log("File selected:", file);
+
+    // Create an object URL for the file
+    const fileURL = URL.createObjectURL(file);
+    console.log("File URL:", fileURL);
+
+    // Initialize QuaggaJS
     Quagga.decodeSingle({
-        src: URL.createObjectURL(file),
-        numOfWorkers: 0,  // Adjust workers based on your environment
+        src: fileURL,
+        numOfWorkers: 0,  // Needs to be 0 for the browser environment
         inputStream: {
-            type: "ImageStream",
             size: 800  // Restrict input size to speed up scanning
         },
         decoder: {
             readers: ["code_128_reader"] // Add other readers if needed
         }
     }, function(result) {
+        console.log("Quagga result:", result);
+
         if (result && result.codeResult) {
             document.getElementById('searchBox').value = result.codeResult.code;
             suggestMedication(); // Trigger medication suggestion
