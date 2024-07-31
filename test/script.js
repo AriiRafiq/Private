@@ -70,22 +70,21 @@ function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Use a barcode scanning library to read the barcode from the image
-    // For example, using QuaggaJS or a similar library
-
-    // Example using QuaggaJS
+    // Use QuaggaJS to read the barcode from the image
     Quagga.decodeSingle({
         src: URL.createObjectURL(file),
-        numOfWorkers: 0,  // Needs to be 0 for the browser environment
+        numOfWorkers: 0,  // Adjust workers based on your environment
         inputStream: {
-            size: 800  // restrict input size to speed up scanning
+            type: "ImageStream",
+            size: 800  // Restrict input size to speed up scanning
         },
         decoder: {
-            readers: ['code_128_reader'] // add other readers if needed
+            readers: ["code_128_reader"] // Add other readers if needed
         }
     }, function(result) {
         if (result && result.codeResult) {
             document.getElementById('searchBox').value = result.codeResult.code;
+            suggestMedication(); // Trigger medication suggestion
         } else {
             alert('Barcode could not be detected. Please try again.');
         }
