@@ -89,3 +89,25 @@ input:focus {
     color: #fff;
     font-size: 18px;
 }
+
+/* Slider */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Scrollbar path */
+::-webkit-scrollbar-track {
+    background-color: Rgb(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* Scroll bar grab */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Hold the scroll bar when scrolling */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
