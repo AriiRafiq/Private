@@ -6,6 +6,32 @@ window.onload = function() {
     document.getElementById('details').style.display = 'none';
     document.getElementById('searchBox').value = '';
     document.getElementById('unitBox').value = '';
+
+    // Initialize QuaggaJS
+    Quagga.init({
+        inputStream: {
+            type: "LiveStream",
+            constraints: {
+                facingMode: "environment" // Use the rear camera
+            },
+            target: document.querySelector('#cameraFeed')
+        },
+        decoder: {
+            readers: ["code_128_reader"] // Add other readers if needed
+        }
+    }, function(err) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        Quagga.start();
+    });
+
+    // Event handler for barcode detection
+    Quagga.onDetected(function(data) {
+        document.getElementById('searchBox').value = data.codeResult.code;
+        suggestMedication();
+    });
 };
 
 function suggestMedication() {
@@ -31,8 +57,8 @@ function selectMedication(med) {
     document.getElementById('unitBox').value = med.Unit;
     updatePrice();
     document.getElementById('details').style.display = 'block';
-	document.getElementById('suggestions').innerHTML = '';
-	document.getElementById('searchBox').value = `${med.Drug} (${med.Barcode})`;
+    document.getElementById('suggestions').innerHTML = '';
+    document.getElementById('searchBox').value = `${med.Drug} (${med.Barcode})`;
 }
 
 function updatePrice() {
@@ -43,57 +69,22 @@ function updatePrice() {
 }
 
 // Add event listener for unitBox input
-unitBox.addEventListener('input', () => {
-
-    if (unitBox.value) {
+document.getElementById('unitBox').addEventListener('input', () => {
+    if (document.getElementById('unitBox').value) {
         updatePrice();
     }
 });
 
-title.addEventListener('click', () => {
-	resetFields();
+document.getElementById('title').addEventListener('click', () => {
+    resetFields();
 });
 
 function resetFields() {
-	searchBox.value = '';
-	unitBox.value = '';
-        priceLabel.textContent = '';
-    }
-	
-	
-	
-document.getElementById('barcodeIcon').addEventListener('click', function() {
-    document.getElementById('barcodeScanner').click();
-});
-
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    console.log("File selected:", file);
-
-    // Create an object URL for the file
-    const fileURL = URL.createObjectURL(file);
-    console.log("File URL:", fileURL);
-
-    // Initialize QuaggaJS
-    Quagga.decodeSingle({
-        src: fileURL,
-        numOfWorkers: 0,  // Needs to be 0 for the browser environment
-        inputStream: {
-            size: 800  // Restrict input size to speed up scanning
-        },
-        decoder: {
-            readers: ["code_128_reader"] // Add other readers if needed
-        }
-    }, function(result) {
-        console.log("Quagga result:", result);
-
-        if (result && result.codeResult) {
-            document.getElementById('searchBox').value = result.codeResult.code;
-            suggestMedication(); // Trigger medication suggestion
-        } else {
-            alert('Barcode could not be detected. Please try again.');
-        }
-    });
+    document.getElementById('searchBox').value = '';
+    document.getElementById('unitBox').value = '';
+    document.getElementById('priceLabel').textContent = '';
 }
+
+document.getElementById('barcodeIcon').addEventListener('click', function() {
+    document.getElementById('cameraContainer').style.display = 'block';
+});
