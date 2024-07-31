@@ -63,37 +63,41 @@ function resetFields() {
 	
 	
 document.getElementById('barcodeIcon').addEventListener('click', function() {
-    document.getElementById('barcodeScanner').click();
+    const cameraFeed = document.getElementById('cameraFeed');
+    const cameraContainer = document.getElementById('cameraContainer');
+
+    if (cameraContainer.style.display === 'none') {
+        // Show the camera feed and start scanning
+        cameraContainer.style.display = 'block';
+
+        // Initialize QuaggaJS
+        Quagga.init({
+            inputStream: {
+                type: "LiveStream",
+                constraints: {
+                    facingMode: "environment" // Use the rear camera
+                },
+                target: cameraFeed
+            },
+            decoder: {
+                readers: ["code_128_reader"] // Add other readers if needed
+            }
+        }, function(err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        // Event handler for barcode detection
+        Quagga.onDetected(function(data) {
+            document.getElementById('searchBox').value = data.codeResult.code;
+            suggestMedication();
+        });
+    } else {
+        // Stop scanning and hide the camera feed
+        Quagga.stop();
+        cameraContainer.style.display = 'none';
+    }
 });
-
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    console.log("File selected:", file);
-
-    // Create an object URL for the file
-    const fileURL = URL.createObjectURL(file);
-    console.log("File URL:", fileURL);
-
-    // Initialize QuaggaJS
-    Quagga.decodeSingle({
-        src: fileURL,
-        numOfWorkers: 0,  // Needs to be 0 for the browser environment
-        inputStream: {
-            size: 800  // Restrict input size to speed up scanning
-        },
-        decoder: {
-            readers: ["code_128_reader"] // Add other readers if needed
-        }
-    }, function(result) {
-        console.log("Quagga result:", result);
-
-        if (result && result.codeResult) {
-            document.getElementById('searchBox').value = result.codeResult.code;
-            suggestMedication(); // Trigger medication suggestion
-        } else {
-            alert('Barcode could not be detected. Please try again.');
-        }
-    });
-}
