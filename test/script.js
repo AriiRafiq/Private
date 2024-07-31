@@ -66,11 +66,11 @@ document.getElementById('barcodeIcon').addEventListener('click', function() {
     const cameraFeed = document.getElementById('cameraFeed');
     const cameraContainer = document.getElementById('cameraContainer');
 
-    if (cameraContainer.style.display === 'none') {
-        // Show the camera feed and start scanning
+    if (cameraContainer.style.display === 'none' || cameraContainer.style.display === '') {
+        // Show the camera feed
         cameraContainer.style.display = 'block';
 
-        // Initialize QuaggaJS
+        // Initialize QuaggaJS for live camera feed
         Quagga.init({
             inputStream: {
                 type: "LiveStream",
@@ -94,9 +94,11 @@ document.getElementById('barcodeIcon').addEventListener('click', function() {
         Quagga.onDetected(function(data) {
             document.getElementById('searchBox').value = data.codeResult.code;
             suggestMedication();
+            // Optionally, you might want to stop scanning once a code is detected
+            // Quagga.stop();
         });
     } else {
-        // Stop scanning and hide the camera feed
+        // Hide the camera feed and stop scanning
         Quagga.stop();
         cameraContainer.style.display = 'none';
     }
