@@ -19,7 +19,7 @@
         <input type="text" id="searchBox" placeholder="Search by name or barcode..." oninput="suggestMedication()">
         <div id="suggestions"></div>
         <div id="details">
-            <input type="number" id="unitBox" placeholder="Unit" min="1" value="1" onchange="updatePrice()">
+            <input type="number" inputmode="numeric" id="unitBox" placeholder="Unit" min="1" value="1" onchange="updatePrice()">
             <label id="priceLabel">Price: </label>
         </div>
     </div>
