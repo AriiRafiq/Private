@@ -39,3 +39,11 @@ function updatePrice() {
     const price = (selectedMedication.OutPrice / selectedMedication.Unit) * unit;
     document.getElementById('priceLabel').innerText = `Price: ${price.toFixed(2)} IQD`;
 }
+
+// Add event listener for unitBox input
+unitBox.addEventListener('input', () => {
+
+    if (unitBox.value) {
+        updatePrice();
+    }
+});
