@@ -47,3 +47,13 @@ unitBox.addEventListener('input', () => {
         updatePrice();
     }
 });
+
+title.addEventListener('click', () => {
+	resetFields();
+});
+
+function resetFields() {
+	searchBox.value = '';
+	unitBox.value = '';
+        resultLabel.textContent = '';
+    }
