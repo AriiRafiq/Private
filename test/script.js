@@ -63,43 +63,31 @@ function resetFields() {
 	
 	
 document.getElementById('barcodeIcon').addEventListener('click', function() {
-    const cameraFeed = document.getElementById('cameraFeed');
-    const cameraContainer = document.getElementById('cameraContainer');
-
-    if (cameraContainer.style.display === 'none' || cameraContainer.style.display === '') {
-        // Show the camera feed
-        cameraContainer.style.display = 'block';
-
-        // Initialize QuaggaJS for live camera feed
-        Quagga.init({
-            inputStream: {
-                type: "LiveStream",
-                constraints: {
-                    facingMode: "environment" // Use the rear camera
-                },
-                target: cameraFeed
-            },
-            decoder: {
-                readers: ["code_128_reader"] // Add other readers if needed
-            }
-        }, function(err) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            Quagga.start();
-        });
-
-        // Event handler for barcode detection
-        Quagga.onDetected(function(data) {
-            document.getElementById('searchBox').value = data.codeResult.code;
-            suggestMedication();
-            // Optionally, you might want to stop scanning once a code is detected
-            // Quagga.stop();
-        });
-    } else {
-        // Hide the camera feed and stop scanning
-        Quagga.stop();
-        cameraContainer.style.display = 'none';
-    }
+    document.getElementById('barcodeScanner').click();
 });
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Use a barcode scanning library to read the barcode from the image
+    // For example, using QuaggaJS or a similar library
+
+    // Example using QuaggaJS
+    Quagga.decodeSingle({
+        src: URL.createObjectURL(file),
+        numOfWorkers: 0,  // Needs to be 0 for the browser environment
+        inputStream: {
+            size: 800  // restrict input size to speed up scanning
+        },
+        decoder: {
+            readers: ['code_128_reader'] // add other readers if needed
+        }
+    }, function(result) {
+        if (result && result.codeResult) {
+            document.getElementById('searchBox').value = result.codeResult.code;
+        } else {
+            alert('Barcode could not be detected. Please try again.');
+        }
+    });
+}
