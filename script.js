@@ -57,5 +57,5 @@ title.addEventListener('click', () => {
 function resetFields() {
 	searchBox.value = '';
 	unitBox.value = '';
-        resultLabel.textContent = '';
+        priceLabel.textContent = '';
     }
